@@ -116,6 +116,27 @@ const Mutation = new GraphQLObjectType({
                 return client
             }
         },
+        updateClientEmail: {
+            type: ClientType,
+            args: {
+                id: {
+                    type: GraphQLID
+                },
+                email: {
+                    type: GraphQLString
+                }
+            },
+            resolve: async (parent, args) => {
+                const id = args.id
+                const client = await Client.findById(id)
+                if (!client) {
+                    throw new Error('Client does not exists')
+                }
+                client.email = args.email
+                await client.save()
+                return client
+            }
+        },
         deleteClient: {
             type: ClientType,
             args: {
@@ -214,7 +235,7 @@ const Mutation = new GraphQLObjectType({
                 const id = args.id
                 return Project.findByIdAndRemove(id)
             }
-        }
+        },
     }
 })
 
